@@ -49,10 +49,7 @@ const Viewer = () => {
         <CanvasBackground>
             <Canvas
                 style={decalPath && { cursor: "none" }}
-                gl={{
-                    preserveDrawingBuffer: true,
-                    //antialias: false,
-                }}
+                gl={{ preserveDrawingBuffer: true }}
                 dpr={
                     window.devicePixelRatio === 2
                         ? 1.5
