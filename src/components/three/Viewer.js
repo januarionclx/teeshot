@@ -1,6 +1,6 @@
-import { softShadows, AdaptiveDpr } from "@react-three/drei"
-import { Canvas, invalidate } from "@react-three/fiber"
-import { Suspense, useEffect, useState } from "react"
+import { softShadows } from "@react-three/drei"
+import { Canvas, invalidate, useFrame } from "@react-three/fiber"
+import { Suspense, useEffect, useState, useRef } from "react"
 import { useSpring } from "react-spring/three"
 import useStore from "../../states/modelState"
 import CanvasBackground from "./CanvasBackground"
@@ -16,6 +16,7 @@ softShadows({
 const Viewer = () => {
     const [modelFlipped, setModelFlipped] = useState(false)
     const [modelRayData, setModelRayData] = useState(null)
+    const modelUrl = "/tshirt.glb"
     const {
         decalPath,
         decalSize,
@@ -45,32 +46,27 @@ const Viewer = () => {
         onChange: () => invalidate(),
     })
 
-
     return (
         <CanvasBackground>
             <Canvas
-                style={decalPath && { cursor: "none" }}
-                gl={{ preserveDrawingBuffer: true }}
-                dpr={
-                    window.devicePixelRatio === 2
-                        ? 1.5
-                        : window.devicePixelRatio
-                }
                 camera={{ position: [0, 0, 2.2], fov: 50 }}
+                dpr={[0.5, 1.5]}
                 frameloop="demand"
+                gl={{ preserveDrawingBuffer: true }}
+                raycaster={{ far: 3.5 }}
+                onCreated={(state) => setGl(state.gl)}
                 shadows
-                onCreated={({ gl }) => setGl(gl)}
+                style={decalPath && { cursor: "none" }}
             >
                 <DecalHelper modelRayData={modelRayData} size={decalSize} />
                 <Suspense fallback={null}>
                     <Model
-                        url="/tshirt.glb"
+                        url={modelUrl}
                         rotation={flipModelAnimation.rotation}
                         setModelRayData={setModelRayData}
                     />
                 </Suspense>
                 <Scenes />
-                <AdaptiveDpr pixelated />
             </Canvas>
         </CanvasBackground>
     )
