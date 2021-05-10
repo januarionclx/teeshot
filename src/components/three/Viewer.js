@@ -1,12 +1,13 @@
 import { softShadows } from "@react-three/drei"
-import { Canvas, invalidate } from "@react-three/fiber"
-import { Suspense, useEffect, useState } from "react"
+import { Canvas, invalidate, useFrame } from "@react-three/fiber"
+import { Suspense, useEffect, useState, useRef } from "react"
 import { useSpring } from "react-spring/three"
 import useStore from "../../states/modelState"
 import CanvasBackground from "./CanvasBackground"
 import DecalHelper from "./DecalHelper"
 import Model from "./Model"
 import Scenes from "./Scenes"
+import Recorder from "./Recorder"
 
 softShadows({
     near: 0.04,
@@ -16,6 +17,7 @@ softShadows({
 const Viewer = () => {
     const [modelFlipped, setModelFlipped] = useState(false)
     const [modelRayData, setModelRayData] = useState(null)
+    const modelUrl = "/tshirt.glb"
     const {
         decalPath,
         decalSize,
@@ -38,7 +40,7 @@ const Viewer = () => {
         }
     }, [])
 
-    // ANIMATION
+    // FLIP ANIMATION
     const flipModelAnimation = useSpring({
         config: { tension: 300, mass: 1.3 },
         rotation: modelFlipped ? [0, Math.PI / 1, 0] : [0, 0, 0],
@@ -48,29 +50,25 @@ const Viewer = () => {
     return (
         <CanvasBackground>
             <Canvas
-                style={decalPath && { cursor: "none" }}
-                gl={{
-                    preserveDrawingBuffer: true,
-                }}
-                dpr={
-                    window.devicePixelRatio >= 1.5
-                        ? 1.5
-                        : window.devicePixelRatio
-                }
                 camera={{ position: [0, 0, 2.2], fov: 50 }}
+                dpr={[0.5, 1.5]}
                 frameloop="demand"
+                gl={{ preserveDrawingBuffer: true }}
+                raycaster={{ far: 3.5 }}
+                onCreated={(state) => setGl(state.gl)}
                 shadows
-                onCreated={({ gl }) => setGl(gl)}
+                style={decalPath && { cursor: "none" }}
             >
                 <DecalHelper modelRayData={modelRayData} size={decalSize} />
                 <Suspense fallback={null}>
                     <Model
-                        url="/tshirt.glb"
+                        url={modelUrl}
                         rotation={flipModelAnimation.rotation}
                         setModelRayData={setModelRayData}
                     />
                 </Suspense>
                 <Scenes />
+                <Recorder />
             </Canvas>
         </CanvasBackground>
     )

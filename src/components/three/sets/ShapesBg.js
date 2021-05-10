@@ -1,5 +1,5 @@
 import { invalidate, useFrame } from "@react-three/fiber"
-import { useRef } from "react"
+import { useRef, useMemo } from "react"
 
 const ShapesBg = ({ backgroundColor }) => {
     const box = useRef()
@@ -8,10 +8,14 @@ const ShapesBg = ({ backgroundColor }) => {
     const donutLarge = useRef()
 
     // ANIMATE
-    useFrame(() => {
-        box.current.rotation.y -= 0.015
-        donut.current.rotation.y -= 0.015
-        donutLarge.current.rotation.y -= 0.015
+    // One degree in radians
+    const oneDeg = useMemo(() => Math.PI / 180, [])
+    // Shape rotation
+    useFrame((state, delta) => {
+        //const clockedRotation = oneDeg * 72 * state.clock.elapsedTime
+        box.current.rotation.y += oneDeg * (360 / 300)
+        donut.current.rotation.y += oneDeg * (360 / 300)
+        donutLarge.current.rotation.y += oneDeg * (360 / 300)
         invalidate()
     })
 

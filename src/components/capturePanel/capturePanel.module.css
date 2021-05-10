@@ -1,0 +1,64 @@
+.wrapper {
+    height: 15vh;
+    min-height: 100px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.container {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transform: translateX(25px);
+}
+.mode_switch {
+    font-size: 1.5rem;
+    width: 25px;
+    height: 25px;
+    color: rgb(230, 230, 230);
+    margin-left: 25px;
+    cursor: pointer;
+}
+.svg {
+    height: 68px;
+    width: 68px;
+    transform: rotate(-90deg);
+    cursor: pointer;
+}
+.capture_outline {
+    fill: white;
+    pointer-events: none;
+}
+.capture_indicator {
+    stroke: red;
+    stroke-width: 2.5;
+    stroke-dasharray: 204;
+    stroke-dashoffset: 204;
+    transform-origin: 50% 50%;
+    fill: transparent;
+    pointer-events: none;
+}
+.capture_indicator_animate {
+    stroke: red;
+    stroke-width: 2.5;
+    stroke-dasharray: 204;
+    stroke-dashoffset: 0;
+    transform-origin: 50% 50%;
+    fill: transparent;
+    animation: fill-animation 1s linear;
+    pointer-events: none;
+}
+.capture_fill {
+    stroke: black;
+    stroke-width: 2.5;
+    pointer-events: none;
+}
+
+@keyframes fill-animation {
+    0% {
+        stroke-dashoffset: 204;
+    }
+    100% {
+        stroke-dashoffset: 0;
+    }
+}
